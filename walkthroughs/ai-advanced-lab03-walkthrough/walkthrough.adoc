@@ -316,6 +316,8 @@ NOTE: The console will be available only after the routes are started. As the da
 
 . Do not multicast the exchange in parallel. To simplify the legibility of the code, use a direct endpoint (`callRestEndpoint`) to call the REST service and a different direct endpoint (`callWSEndpoint`) to call the web service service.
 
+You can copy the camel-context.xml code from here: link:https://gist.githubusercontent.com/satyaj/20885f7f4db3edd45e44c61471c9a23c/raw/ef88e2b888ed6fe3155aea459e1361d035d2c83f/camel-context.xml[camel-context.xml, window="_blank"]
+
 
 === Define the REST Direct Routes
 
@@ -341,6 +343,8 @@ NOTE: The console will be available only after the routes are started. As the da
 +
 NOTE: The aggregation strategy must be developed within the `AccountAggregator` class.
 
+You can copy the code from here: link:https://gist.githubusercontent.com/satyaj/d2dc0ce2638b58c906d3f662ae096095/raw/1b2db68607ffb93ed6bafd836fa7ab32c5f59bf7/AccountAggregator.java[AccountAggregator.java, window="_blank"]
+
 === Insert the Aggregated Data into the Database
 
 Next you create a new Apache Camel route to insert the `Account` information into the `T_ACCOUNT` table of the `SAMPLEDB` database.
@@ -353,15 +357,9 @@ Next you create a new Apache Camel route to insert the `Account` information int
 
 . After calling the SQL endpoint, add a log message processor to display the contents of the received body.
 
-=== Develop a JUnit Test
-
-. Develop a JUnit test case to validate that the `jackson` ObjectMapper can read the string content of the JSON `Account` message and generate an `Account` object.
-* JUnit test class: `JacksonCompanyTest`
-
-. Define two assert conditions: one to check that the object is not null, and the other to verify that the name of the company is equal to "Robocops".
 
 [type=verification]
-Is the camel route coding complete?
+Is the camel route and Aggregation class coding complete?
 
 
 [type=taskResource]

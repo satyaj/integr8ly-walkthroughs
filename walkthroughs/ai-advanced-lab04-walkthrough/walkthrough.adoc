@@ -1,4 +1,4 @@
-= Agile Integration Advanced LAB 10 - AMQ Online Setup Lab
+= Agile Integration Advanced LAB 4 - AMQ Online Setup Lab
 
 In this lab, you set up AMQ Online to be used as the messaging platform on OpenShift for the Fuse and Fuse Online labs.
 

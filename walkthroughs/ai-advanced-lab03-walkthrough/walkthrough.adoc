@@ -1,4 +1,4 @@
-= Agile Integration Advanced LAB 5 - Fuse Enrich Content and Aggregate Data Lab
+= Agile Integration Advanced LAB 3 - Fuse Enrich Content and Aggregate Data Lab
 
 A lab based on Springboot Camel to process the account records in JSON format from AMQ, and through enrichment and aggregation create a more complete account record persisted in the database.
 

@@ -1,4 +1,4 @@
-= Agile Integration Advanced LAB 1- Environment Set up Lab
+= Agile Integration Advanced LAB 1 - Environment Set up Lab
 
 In this lab, you set up the environment for the labs in this course.
 

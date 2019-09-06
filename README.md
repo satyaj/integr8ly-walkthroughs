@@ -9,10 +9,18 @@ To run a custom walkthrough you need an exiting OpenShift cluster with integreat
 * Edit the YAML by adding the following section in *Spec > Template > Properties*:
 
 ----
-WALKTHROUGH_LOCATIONS: https://github.com/integr8ly/tutorial-web-app-walkthroughs#master,https://github.com/gpe-mw-training/integr8ly-walkthroughs#master
+WALKTHROUGH_LOCATIONS: https://github.com/integr8ly/tutorial-web-app-walkthroughs#master,https://github.com/satyaj/integr8ly-walkthroughs#master
 ----
 
 NOTE: If you do not want the default Integreatly walkthoughs to be displayed, then do not include the *https://github.com/integr8ly/tutorial-web-app-walkthroughs#master* location.
+
+* You can add more walkthroughs by using the `,` separator.
+
+* The WALKTHROUGH_LOCATION assumes a *walkthrough* folder exists with the walkthroughs. If your walkthroughs are in a different folder, use the parameter *walkthroughsFolder=/docs/labs/citizen-integrator-track*
+
+----
+WALKTHROUGH_LOCATIONS: https://github.com/RedHatWorkshops/dayinthelife-integration.git?walkthroughsFolder=/docs/labs/citizen-integrator-track&walkthroughsFolder=/docs/labs/developer-track&walkthroughsFolder=/docs/labs/operations-track
+----
 
 * Save the YAML to trigger a redeployment of the *tutorial-web-app*.
 

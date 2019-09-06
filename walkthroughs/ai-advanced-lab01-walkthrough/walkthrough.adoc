@@ -18,7 +18,7 @@ In this lab, you set up the environment for the labs in this course.
 [time=10]
 == Introduction
 
-In this lab, you set up the environment for the labs in this course. You will install required software and download lab assets in the local environment. On OpenShift, a shared namespace {user-sanitized-username}-fuse is created and common services like AMQ Broker and PostgreSQL are deployed in this namespace. This namespace is used across the Fuse and Fuse Online labs for developing the usecases.
+In this lab, you set up the environment for the labs in this course. You will install required software and download lab assets in the local environment. On OpenShift, a shared namespace *{user-sanitized-username}*-fuse is created and common services like AMQ Broker and PostgreSQL are deployed in this namespace. This namespace is used in the subsequent labs for developing the usecases.
 
 === Goals
 
@@ -31,10 +31,9 @@ In this lab, you set up the environment for the labs in this course. You will in
 * An open broadband Internet connection
 * A terminal client, such as PuTTy for Microsoft Windows
 * A current browser, such as Google Chrome or Mozilla Firefox
-* OPENTLC credentials
 * Enough disk space to install Red Hat CodeReady Studio, Red Hat Fuse, Red Hat AMQ and other programming tools (Maven, OpenShift CLI, Java).
 +
-[IMPORTANT]
+[NOTE]
 Make sure that the Internet connection is free of corporate proxies or other network rules that prevent access to remote servers on the Internet.
 
 [time=60]
@@ -44,7 +43,7 @@ In this course, you create Red Hat Fuse Standalone and Fuse on OpenShift applica
 
 === Required Developer Tools
 
-Verify that the following software is installed on your machine. If not, follow the links to install the required software:
+Verify that the following software is installed on your machine. If not, follow the links on the right to install the required software:
 
 . JDK 1.8
 . Maven 3.3.9+
@@ -62,27 +61,42 @@ Please follow the links on the right to download and install the required softwa
 
 This course comes with a variety of lab assets that are version-controlled in GitHub. In this section, you clone or update the lab assets on your workstation so that they are available locally for use in the course labs.
 
-. In a terminal shell, create a directory called `ai_advanced_labs` and change your working directory to it:
+. In a terminal shell, create a directory called `ai_advanced_labs`
 +
 [source,sh]
 ----
-$ mkdir ai_advanced_labs
-$ cd ai_advanced_labs
+mkdir ai_advanced_labs
 ----
 
-. From this new directory, download the lab assets from GitHub and change your working directory to `agile_integration_advanced_labs/code`:
+. Change working directory to above:
 +
 [source,sh]
 ----
-$ git clone https://github.com/gpe-mw-training/agile_integration_advanced_labs.git
-$ cd agile_integration_advanced_labs/code
+cd ai_advanced_labs
+----
+
+. In this new directory, download the lab assets from GitHub :
++
+[source,sh]
+----
+git clone https://github.com/gpe-mw-training/agile_integration_advanced_labs.git
+----
+
+. Change your working directory to `agile_integration_advanced_labs/code`
++
+[source,sh]
+----
+cd agile_integration_advanced_labs/code
 ----
 +
 [NOTE]
 This is the root folder for the lab assets. The absolute path to this folder is referred to as `$AI_EXERCISE_HOME` in the instructions.
 
 
-=== Install Red Hat CodeReady Studio
+=== Install Red Hat CodeReady Studio (Optional)
+
+[NOTE]
+The instructions assume you are using Red Hat CodeReady Studio for development. You can use the IDE of your choice, e.g Eclipse, Vi, CodeReady Workspaces, etc. 
 
 . Using your browser, navigate to the product page for link:https://developers.redhat.com/products/codeready-studio/[Red Hat CodeReady Studio].
 
@@ -101,16 +115,6 @@ image::images/jbds_download_selection.png[diagram, role="integr8ly-img-responsiv
 image::images/dl_instructions.png[diagram, role="integr8ly-img-responsive"]
 
 
-Red Hat CodeReady Studio includes a variety of plug-ins for Eclipse. You use the following Red Hat CodeReady Studio plug-ins to complete the labs in the Red Hat OPEN middleware courses:
-
-* *Integration Stack*: The Integration Stack suite of plug-ins is particularly important when using Red Hat(R) Fuse and Red Hat(R) AMQ. The Integration Stack is not included with Red Hat CodeReady Studio and must be manually installed.
-
-* *EGit*: CodeReady Studio includes the Eclipse EGit plug-in, which provides Git project support. No additional installation is required. Git is an open source version control system, providing developers with fast, versatile access to their application code's entire revision history.
-
-* *M2E*: Red Hat CodeReady Studio includes the Eclipse M2E plug-in, which provides support for Apache Maven projects. No additional installation is required. The M2E plug-in enables you to edit a Maven project’s `pom.xml` and run a Maven build from the IDE.
-
-You can select the plug-in installation during the Red Hat CodeReady Studio installation process, or you can select these from the welcome page.
-
 [type=verification]
 Is Red Hat CodeReady Studio installed successfully on your local workstation?
 
@@ -125,13 +129,16 @@ If you want to deploy and run the labs locally, you will need to install Red Hat
 NOTE: Note that the skeleton code for the labs is provided as a Spring Boot application, so you can choose to test the labs locally using the spring-boot Maven plug-in, or from Red Hat CodeReady Studio. Optionally, you can install either standalone Red Hat Fuse Karaf or JBoss EAP depending on your preference, and deploy the labs to these standalone environments. As part of the labs, you will also be deploying the labs to an OpenShift Container Platform environment.
 
 
-=== Install Red Hat AMQ 7.2.0
+=== Install Red Hat AMQ 7.2.0 (Optional)
 
-You need to run a Red Hat AMQ broker locally to execute some of the labs in this course. Please download the link:https://developers.redhat.com/products/amq/download/[Red Hat AMQ 7.2.0 Broker installer] and follow the link:https://access.redhat.com/documentation/en-us/red_hat_amq/7.2/html/using_amq_broker/installation[instructions] to install it on your laptop.
+
+NOTE: You need to run a Red Hat AMQ broker locally to execute the labs locally. You can skip this step and install/test directly on OpenShift. 
+
+Please download the link:https://developers.redhat.com/products/amq/download/[Red Hat AMQ 7.2.0 Broker installer] and follow the link:https://access.redhat.com/documentation/en-us/red_hat_amq/7.2/html/using_amq_broker/installation[instructions] to install it on your laptop.
 
 Once installed, please follow the link:https://access.redhat.com/documentation/en-us/red_hat_amq/7.2/html/using_amq_broker/getting_started[Getting Started] steps to start a new broker running locally on your laptop.
 
-IMPORTANT: Provide the user ID and password for the broker as `admin` and `password`.
+NOTE: Provide the user ID and password for the broker as `admin` and `password`.
 
 [type=verification]
 Is Red Hat AMQ 7.2.0 installed successfully on your local workstation?
@@ -151,9 +158,9 @@ Please follow the links on the right to download and install Red Hat AMQ 7.2.0 b
 * link:https://www.soapui.org/downloads/soapui.html[SoapUI(latest version), window="_blank"]
 * link:https://access.redhat.com/documentation/en-us/red_hat_developer_studio/12.9/[Red Hat CodeReady Studio Product Documentation, window="_blank"]
 * link:https://developers.redhat.com/products/fuse/download/[Red Hat Fuse Download, window="_blank"]
-* link:https://developers.redhat.com/products/amq/download/[Red Hat AMQ 7.2.0 Broker installer, window="_blank"]
-* link:https://access.redhat.com/documentation/en-us/red_hat_amq/7.2/html/using_amq_broker/installation[Red Hat AMQ 7.2.0 Installation instructions, window="_blank"]
-* link:https://access.redhat.com/documentation/en-us/red_hat_amq/7.2/html/using_amq_broker/getting_started[Red Hat AMQ 7.2.0 Getting Started, window="_blank"]
+* link:https://developers.redhat.com/products/amq/download/[Red Hat AMQ 7.3.0 Broker installer, window="_blank"]
+* link:https://access.redhat.com/documentation/en-us/red_hat_amq/7.3/html-single/getting_started_with_amq_broker/index#installing-broker-getting-started[Red Hat AMQ 7.3.0 Installation instructions, window="_blank"]
+* link:https://access.redhat.com/documentation/en-us/red_hat_amq/7.3/html-single/getting_started_with_amq_broker/index#creating-standalone-getting-started[Red Hat AMQ 7.3.0 Getting Started, window="_blank"]
 
 ****
 
@@ -164,9 +171,9 @@ A shared Integreatly OpenShift cluster is provisioned for use during the class. 
 
 ==== Credentials
 
-* Your OpenShift Host URL is `{openshift-host}`.
+* Your OpenShift Host URL is `link:{openshift-host}[window="_blank"]`.
 * Your username is `{user-sanitized-username}`.
-* Your password is `openshift`.
+* Your password is provided by the instructor.
 
 === Create OpenShift Namespace
 
@@ -186,7 +193,7 @@ Is the new namespace in OpenShift created successfully?
 
 === Deploy AMQ Broker on OpenShift Container Platform
 
-We need to deploy AMQ 7 broker on OpenShift Container Platform. The general installation steps are documented here: link:https://access.redhat.com/documentation/en-us/red_hat_amq/7.2/html-single/deploying_amq_broker_on_openshift_container_platform/[AMQ Installation of OpenShift Guide].
+We need to deploy AMQ 7 broker on OpenShift Container Platform. 
 
 . Continue using the terminal where you logged into OpenShift using the `oc` command tool.
 . Switch OpenShift project:
@@ -215,7 +222,7 @@ oc policy add-role-to-user view system:serviceaccount:{user-sanitized-username}-
 [subs="attributes"]
 ----
 oc new-app --namespace {user-sanitized-username}-fuse \
-   --template=amq-broker-72-basic \
+   --template=amq-broker-73-basic \
    -e AMQ_PROTOCOL=openwire,amqp,stomp,mqtt,hornetq \
    -e AMQ_USER=admin \
    -e AMQ_PASSWORD=password \
@@ -236,10 +243,10 @@ echo http://`oc get route console -o template --template {{.spec.host}}`
 
 
 [type=verification]
-Is Red Hat AMQ 7.2.0 installed successfully on OpenShift?
+Is Red Hat AMQ 7.3.0 installed successfully on OpenShift?
 
 [type=verificationFail]
-Please follow the links on the right to follow the installation steps for Red Hat AMQ 7.2.0 on OpenShift before proceeding to next section.
+Please follow the links on the right to follow the installation steps for Red Hat AMQ 7.3.0 on OpenShift before proceeding to next section.
 
 
 === Deploy PostgreSQL on OpenShift Container Platform
@@ -340,6 +347,12 @@ CREATE TABLE USECASE.T_ERROR (
 
 . You can use `\q` to exit the PostgreSQL command line.
 
+. Quit the remote shell to the postgre-sql pod :
++
+----
+exit
+----
+
 [type=verification]
 Is PostgreSQL installed successfully on OpenShift?
 
@@ -351,7 +364,7 @@ Please follow the links on the right to follow the installation steps for Postgr
 .Red Hat OpenShift Documentation
 ****
 
-* link:https://access.redhat.com/documentation/en-us/red_hat_amq/7.2/html-single/deploying_amq_broker_on_openshift_container_platform/[AMQ Installation of OpenShift Guide, window="_blank"]
+* link:https://access.redhat.com/documentation/en-us/red_hat_amq/7.3/html-single/deploying_amq_broker_on_openshift_container_platform/[AMQ Installation of OpenShift Guide, window="_blank"]
 * link:https://docs.openshift.com/container-platform/3.10/using_images/db_images/postgresql.html[PostgreSQL on OpenShift guide, window="_blank"]
 
 ****

@@ -1,4 +1,4 @@
-= Agile Integration Advanced LAB 4 - Fuse Fix Errors And Publish Records Lab
+= Agile Integration Advanced LAB 2 - Fuse Fix Errors And Publish Records Lab
 
 A lab based on Springboot Camel to consume records using REST into an input queue, provide DLQ pattern for fixing error records and reprocess corrected records to AMQ.
 
@@ -17,7 +17,7 @@ A lab based on Springboot Camel to consume records using REST into an input queu
 [time=10]
 == Introduction and Set up
 
-In this lab you modify the use case you developed in the *Split and Transform Rest* lab to publish the individual JSON `Account` records to message input queues, including an error topic in the event of a processing error. You also develop a strategy to correct erroneous messages and republish them.
+In this lab you develop the use case to read from a CSV input, split and transform the messages into JSON and publish the individual JSON `Account` records to message input queues. You also implement an error handling strategy using DLQ and reprocessing of records after correction.
 
 The route implements an interception strategy when an `IllegalArgumentException` exception is thrown. The erroneous record is published to a special topic, and an error code and error message are added.
 
@@ -73,34 +73,101 @@ NOTE: The console will be available only after the routes are started. As the da
 
 === Import the Camel Route
 
-. Copy the Camel route you developed in the previous lab.
-. Test to verify the route builds and works correctly.
+. Open the *camel-context.xml* file.
+. Paste the following Camel route below, overwriting the file:
++
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <!-- Define a traditional camel context here -->
+    <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+        <propertyPlaceholder id="properties" location="route.properties"/>
+        <!-- EXCLUDE-BEGIN -->
+        <endpoint id="csv2json" uri="dozer:csv2json2?sourceModel=org.acme.Customer&amp;targetModel=org.globex.Account&amp;marshalId=json&amp;unmarshalId=csv&amp;mappingFile=transformation.xml"/>
+        <!-- CSV Input & JSon OutPut DataFormat -->
+        <dataFormats>
+            <bindy classType="org.acme.Customer" id="csv" type="Csv"/>
+            <json id="json" library="Jackson"/>
+        </dataFormats>
+        <restConfiguration bindingMode="off" component="servlet" contextPath="/rest"/>
+        <rest apiDocs="true"
+            id="rest-130579d7-1c1b-409c-a496-32d6feb03006" path="/service">
+            <post id="32d64e54-9ae4-42d3-b175-9cfd81733379" uri="/customers">
+                <to uri="direct:inbox"/>
+            </post>
+        </rest>
+        <route id="_injectroute" streamCache="true">
+            <from id="_fromIR1" uri="direct:inbox"/>
+            <setExchangePattern id="_setExchangePattern3" pattern="InOnly"/>
+            <to id="_to1" uri="amqp:queue:inputQueue"/>
+            <transform id="_transform1">
+                <constant>Processed the customer data</constant>
+            </transform>
+        </route>
+        <route id="_route1" streamCache="true">
+            <!-- Consume files from input directory -->
+            <from id="_from1" uri="amqp:queue:inputQueue"/>
+            <onException id="_onException1">
+                <exception>java.lang.IllegalArgumentException</exception>
+                <handled>
+                    <constant>true</constant>
+                </handled>
+                <log id="_log1" message=">> Exception : ${body}"/>
+                <setExchangePattern id="_setExchangePattern1" pattern="InOnly"/>
+                <to id="_to2" uri="direct:error"/>
+            </onException>
+            <split id="_split1">
+                <tokenize token=";"/>
+                <to id="_to3" ref="csv2json"/>
+                <setExchangePattern id="_setExchangePattern2" pattern="InOnly"/>
+                <to id="_to4" uri="amqp:queue:accountQueue"/>
+                <log id="_log2" message=">> Completed JSON: ${body}"/>
+            </split>
+        </route>
+        <!-- Publish the error code and error message on a topic -->
+        <route id="direct-error-queue">
+            <from id="_from2" uri="direct:error"/>
+            <setHeader headerName="error-code" id="_setHeader1">
+                <constant>111</constant>
+            </setHeader>
+            <setHeader headerName="error-message" id="_setHeader2">
+                <simple>${exception.message}</simple>
+            </setHeader>
+            <setHeader headerName="message" id="_setHeader3">
+                <simple>${body}</simple>
+            </setHeader>
+            <log id="_log3" logName="org.fuse.usecase"
+                loggingLevel="DEBUG" message="!!!! ERROR NOTIFICATION SEND"/>
+            <to id="error-queue-endpoint" uri="amqp:{{topicNotification}}"/>
+        </route>
+        <!-- Consume the Topic message and publish it into the DB -->
+        <route id="error-queue-sql">
+            <from id="_from3" uri="amqp:{{topicNotification}}"/>
+            <log id="_log4" logName="org.fuse.usecase"
+                loggingLevel="DEBUG" message="!!!! NOTIFICATION RECEIVED"/>
+            <log id="_log5" logName="org.fuse.usecase"
+                loggingLevel="DEBUG" message=">> Error code : ${header.error-code}, Error Message : ${header.error-message}"/>
+            <to id="_to5" uri="sql:insert into USECASE.T_ERROR(ERROR_CODE,ERROR_MESSAGE,MESSAGE,STATUS)                      values (:#${header.error-code}, :#${header.error-message}, :#${header.message}, 'ERROR');"/>
+        </route>
+        <!-- Inject correct record/message and update their status to CLOSE -->
+        <route id="sql-queue-input">
+            <from id="_from4" uri="sql:select MESSAGE, ID from USECASE.T_ERROR where STATUS = 'FIXED' ?consumer.onConsume=update USECASE.T_ERROR set STATUS='CLOSE' where ID = :#ID"/>
+            <setBody id="_setBody1">
+                <simple>${body[message]}</simple>
+            </setBody>
+            <log id="_log6" message=">> Body : ${body}"/>
+            <to id="_to6" uri="amqp:queue:inputQueue"/>
+        </route>
+        <!-- EXCLUDE-END -->
+    </camelContext>
+</beans>
+----
 
-=== Implement the Interception Strategy
+. Notice the routes and understand the solution.
+. Test to verify the route builds correctly.
 
-. Develop your interception strategy to fetch the `IllegalArgumentException` exception and move the information into a `errorNotification` topic with the associated `error-code` and `error-message`.
-
-* You can set the error code to `111` so that the error message corresponds to the first message reported by the stack trace that Camel Bindy throws.
-
-* The string content of the message must be saved into the JMS message so it can be used to update the `T_ERROR` table.
-
-[TIP]
-====
-* You can create a `direct:error` route that you call from your interception strategy.
-* It is a good idea to add an EIP log processor to collect information using the `DEBUG` logging level and the `org.fuse.usecase` log name.
-====
-
-=== Extend the Existing Camel Routes
-
-. Add a new route with an ActiveMQ endpoint to consume the JMS messages from the `errorNotification` topic.
-
-. Develop your strategy to insert a record with the information from this route (code, error message, message, and status) into the `T_ERROR` table.
-
-=== Redeliver the Corrected Message
-
-. Based on the information saved into the `T_ERROR` database, develop your strategy to inject the corrected message into the `inputQueue` queue.
-
-WARNING: Remember to update the status according to the values defined. A new message has the status `ERROR`, an updated message has the status `FIXED`, and a reinjected message has the status `CLOSED`.
 
 
 [type=verification]
@@ -122,7 +189,9 @@ Is the camel route coding complete?
 ****
 
 [time=20]
-== Verify your Solution
+== Verify your Solution Locally
+
+NOTE: You can skip this step if you are unable run the labs locally.
 
 === Prepare the AMQ Broker
 
@@ -231,7 +300,7 @@ Is the Fuse project deployed successfully on OpenShift?
 curl -k http://`oc get route rest-publish-and-fix-errors-lab -o template --template {{.spec.host}}`/rest/service/customers -X POST  -d 'Rotobots,NA,true,Bill,Smith,100 N Park Ave.,Phoenix,AZ,85017,602-555-1100;BikesBikesBikes,NA,true,George,Jungle,1101 Smith St.,Raleigh,NC,27519,919-555-0800;CloudyCloud,EU,true,Fred,Quicksand,202 Barney Blvd.,Rock City,MI,19728,313-555-1234;ErrorError,,,EU,true,Fred,Quicksand,202 Barney Blvd.,Rock City,MI,19728,313-555-1234' -H 'content-type: text/html'
 ----
 +
-NOTE: If the above command results in a *curl* error, you might have run into an issue with the charset encoding in your terminal. You can try the curl command from a broswer at `https://onlinecurl.com/` and this should work.
+NOTE: If the above command results in a *curl* error, you might have run into an issue with the charset encoding in your terminal. You can try the curl command from a browser at `https://onlinecurl.com/` and this should work.
 
 * Check pod logs for any errors or exceptions in the Camel route.
 * Check the broker web console. You should have 3 messages to the *accountQueue* and 1 message to the *errorNotification*.

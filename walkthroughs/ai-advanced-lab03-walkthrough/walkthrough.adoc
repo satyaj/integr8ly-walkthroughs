@@ -290,7 +290,7 @@ echo http://`oc get route soap-service -o template --template {{.spec.host}}`/ws
 
 . You can test the SOAP service by running the same SOAP UI request above, replacing the localhost URL with the remote URL. The response received should be the same as for localhost.
 
-[time=90]
+[time=30]
 == Prepare the Solution
 
 Now you will be implementing the Camel routes for enriching the Account data with the 2 backend services, aggregate the responses, and finally persist the data into a database table. You will be completing the code for this section in the project *amq-enrich-persist-lab*. 

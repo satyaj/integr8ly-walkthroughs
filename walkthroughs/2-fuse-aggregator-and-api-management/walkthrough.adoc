@@ -6,7 +6,7 @@
 :3Scale-ProductName: Red Hat 3scale
 :fuse-flights-aggregator-app-name: fuse-flights-aggregator-{user-sanitized-username}
 
-= Managing and protecting APIs using API management
+= RHMI LAB 4 - Managing and protecting APIs using API management
 
 :context: integrating-api-driven-applications
 

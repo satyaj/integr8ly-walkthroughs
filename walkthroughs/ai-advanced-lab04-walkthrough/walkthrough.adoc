@@ -98,7 +98,7 @@ image::images/amq_online_list_addresses.png[diagram, role="integr8ly-img-respons
 [type=verification]
 Were you able to create to the AMQ Online addresses sucessfully using the Management Console?
 
-[time=30]
+[time=10]
 == Test your Solution
 
 === Access to AMQP

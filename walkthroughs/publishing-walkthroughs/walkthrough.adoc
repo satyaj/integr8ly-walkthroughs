@@ -6,7 +6,7 @@
 // Placeholder for link to docs about writing walkthroughs
 :linkWriting: na yet
 
-= Adding walkthroughs to a cluster
+= RHMI LAB 2 - Publishing New walkthroughs to a cluster
 
 How to add to the catalog of walkthroughs in your environment by subscribing to remote git repositories.
 

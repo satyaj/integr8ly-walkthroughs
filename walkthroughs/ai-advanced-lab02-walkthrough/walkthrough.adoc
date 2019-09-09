@@ -58,7 +58,7 @@ Ensure the project pom is selected and there are no build errors on import.
 ****
 
 
-[time=90]
+[time=30]
 == Develop the Solution
 
 === H2 Database

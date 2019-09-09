@@ -4,7 +4,7 @@
 :linkIndexURL: https://github.com/integr8ly/example-customisations/index.adoc
 
 
-= Writing Walkthroughs
+= RHMI LAB 3 - Writing Walkthroughs
 
 How to get started with writing your own Walkthroughs using a simple markup language.
 
